@@ -1,0 +1,16 @@
+1. Implementar normal a partir do buffer de indices e testar isso com
+iftSurfaceRender. 
+
+2. Implementar front-to-back voxel splatting para surface rendering
+
+2a. Cena opaca
+2b. Cena semi-transparente
+
+3. Implementar front-to-back voxel splatting para volume rendering
+
+4. Colorir imagem do BMD e incorporar ela ao pipeline de
+BMD. Investigar a possibilidade de gerar grafico com C e acrescentar
+LUT na imagem.
+
+
+ 

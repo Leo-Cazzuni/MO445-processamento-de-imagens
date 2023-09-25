@@ -1,0 +1,68 @@
+############## HOW TO SHARE FOLDER USING SSHFS ##############
+
+Tutorial based on: https://askubuntu.com/questions/412477/mount-remote-directory-using-ssh
+
+1) Install sshfs
+sudo apt-get install sshfs
+
+
+2) Generate key pair on your machine
+ssh-keygen -t rsa
+
+Press <enter> for the option
+"Enter file in which to save the key (/home/your_home/.ssh/id_rsa):
+
+If the pair of keys already exists, press <n> for the message below:
+/home/your_home/.ssh/id_rsa already exists.
+Overwrite (y/n)? 
+
+Otherwise, press <enter> for the remaining options.
+
+The pair of keys (public and private) will be saved on folder ~/.ssh/id_rsa and ~/.ssh/id_rsa.pub
+
+
+3) Copy public key to the remote host (lutz):
+ssh-copy-id -i ~/.ssh/id_rsa.pub your_user@lutz.lids.ic.unicamp.br
+
+The public key of your machine will be added to the file ~/.ssh/authorized_keys on your account on lutz.
+Then, every time you try to log into lutz, the authentication will be done by its public key, without
+requiring your password anymore.
+
+
+4) Mount/share a directory from lutz to your machine:
+Add to the end of your "~/.bashrc" file the following commands, only replacing the directory of lutz
+that you want to mount/share and the directory on your machine that will be the mounting point.
+
+################################################
+# mount a directory
+export LUTZ_SSHFS_MOUNT_DIR=$HOME/bases
+
+if [ ! -d $LUTZ_SSHFS_MOUNT_DIR ]; then
+    mkdir $LUTZ_SSHFS_MOUNT_DIR
+fi
+sshfs your_user@lutz.lids.ic.unicamp.br:/home/bases/LIDS/datasets -o ro $LUTZ_SSHFS_MOUNT_DIR -o reconnect
+################################################
+
+
+The variable LUTZ_SSHFS_MOUNT_DIR stores the directory on your machine where a given directory from
+lutz will be mounted. You can
+It is created if it doens't exist.
+
+Then, a given directory from lutz, in the example the dir "/home/bases/LIDS/datasets", will be mounted
+on the directory "bases" on your home.
+You can choose any other folder on your machine for any other directory on lutz.
+
+The option ro guarantees that "read-only" access for the folder "/home/bases/LIDS/datasets".
+This is important since one could incorrectly erase some files by any chance.
+Only remove this option if it is really necessary.
+
+The option reconnect guarantees the connection will be reconnected if it is down.
+
+These commands added to your .bashrc will be executed every time you open a session on your terminal.
+
+
+5) (Optional) Unmounting a directory
+fusermount -u directory_mounting_point_on_your_machine
+
+TO unmount the directory of step (4), for example:
+fusermount -u $LUTZ_SSHFS_MOUNT_DIR

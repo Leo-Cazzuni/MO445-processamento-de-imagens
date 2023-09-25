@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/Images">
+        <file alias="icons/add.svg">resources/icons/add.svg</file>
+        <file alias="icons/arrow_down.svg">resources/icons/arrow_down.svg</file>
+        <file alias="icons/arrow_up.svg">resources/icons/arrow_up.svg</file>
+        <file alias="icons/box.png">resources/icons/box.png</file>
+        <file alias="icons/box.svg">resources/icons/box.svg</file>
+        <file alias="icons/brig_cont.svg">resources/icons/brig_cont.svg</file>
+        <file alias="icons/colors.svg">resources/icons/colors.svg</file>
+        <file alias="icons/eraser.png">resources/icons/eraser.png</file>
+        <file alias="icons/eraser.svg">resources/icons/eraser.svg</file>
+        <file alias="icons/freeform.png">resources/icons/freeform.png</file>
+        <file alias="icons/mirror.svg">resources/icons/mirror.svg</file>
+        <file alias="icons/normalSize.svg">resources/icons/normalSize.svg</file>
+        <file alias="icons/ok.svg">resources/icons/ok.svg</file>
+        <file alias="icons/pause.svg">resources/icons/pause.svg</file>
+        <file alias="icons/pen.svg">resources/icons/pen.svg</file>
+        <file alias="icons/planes.svg">resources/icons/planes.svg</file>
+        <file alias="icons/remove.svg">resources/icons/remove.svg</file>
+        <file alias="icons/save.svg">resources/icons/save.svg</file>
+        <file alias="icons/turn.svg">resources/icons/turn.svg</file>
+        <file alias="icons/wireframe.svg">resources/icons/wireframe.svg</file>
+        <file alias="icons/zoomIn.svg">resources/icons/zoomIn.svg</file>
+        <file alias="icons/zoomOut.svg">resources/icons/zoomOut.svg</file>
+        <file alias="icons/visibility.svg">resources/icons/visibility.svg</file>
+        <file alias="icons/visibility_off.svg">resources/icons/visibility_off.svg</file>
+        <file alias="icons/segmentation.png">resources/icons/segmentation.png</file>
+        <file alias="icons/folder_open.svg">resources/icons/folder_open.svg</file>
+        <file alias="icons/LIDS.png">resources/icons/LIDS.png</file>
+    </qresource>
+    <qresource prefix="/arch">
+        <file alias="simple_arch.json">resources/arch/simple_arch.json</file>
+    </qresource>
+</RCC>

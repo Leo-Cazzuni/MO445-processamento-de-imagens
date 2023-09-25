@@ -1,0 +1,115 @@
+For more information and examples of how to document on IFT, see iftDict.h and iftUtil.h
+
+ 
+==> For simple and intuitive functions
+/**
+ * @brief Prints the dictionary in a fancy style.
+ * @author Samuel Martins
+ * @date Jan 17, 2016
+ * @ingroup Dictionary
+ */
+void iftPrintDict(iftDict *dict);
+ 
+ 
+==> Basic documentation
+/**
+ * @brief Compares two strings.
+ * @author Samuel Martins
+ * @date Dec 10, 2015
+ * @ingroup String
+ *
+ * @param str1 First String.
+ * @param str2 Second String.
+ * @return True if they are equal. False, otherwise.
+ */
+bool iftCompareStrings(const char *str1, const char *str2);
+ 
+ 
+==> Documentation with a long description
+/**
+ * @brief Loads all files (not subdirs) in the directory <dir_pathname> from a given <extension>.
+ * @author Samuel Martins
+ * @date Aug 15, 2015
+ * @ingroup File
+ *
+ * Loads all files (not subdirs) in the directory <b><code>dir_pathname</code></b> from a given <b><code>extension</code></b>.
+ * The filenames are sorted in ascending order.
+ * It only gets the files from the 1st file hierarchical level.
+ * If <b><code>extension</code></b> = "", it gets all files (not subdirs).
+ *
+ * @param dir_pathname The directory to be read.
+ * @param extension Extension from the files.
+ * @return An iftDir with all files with <extension> inside <dir_pathname>.
+ */
+iftDir *iftLoadFilesFromDirBySuffix(const char *dir_pathname, const char *extension);
+ 
+ 
+==> Documentation a block of similar functions (obs: the same descriptions will be used assigned to all functions inside the block)
+/**
+ * @brief Allocates a Char Array (string) with <b>n</b> positions
+ * @ingroup Memory
+ * @{
+ */
+char *iftAllocCharArray(size_t n);
+unsigned char *iftAllocUCharArray(size_t n);
+short *iftAllocShortArray(size_t n);
+...
+/** @} */
+ 
+ 
+==> Some Interesting Additional flags
+@note Some note that you want to highlight with a green tag.
+@warning Some warning that you want to highlight with a red tag.
+@exception Exception that you want to highlight
+ 
+You can also use html tags in our documentation in order to highlight something.
+ 
+==> More Examples:
+/**
+ * @brief Loads an Array of iftFiles from a Directory (in the entire directory hierarchy).
+ * @author Samuel Martins
+ * @date Oct 6, 2015
+ * @ingroup File
+ *
+ * @param dir_pathname The pathname from the directory to be read.
+ * @return The array of iftFiles.
+ *
+ * @exception dir_pathname does not exist or it is a File.
+ */
+iftFileSet *iftLoadFileSetFromDir(const char *dir_pathname);
+ 
+ 
+ 
+/**
+ * @brief Creates a Command Line Parser from a set of command line options.
+ * @author Samuel Martins
+ * @date Feb 15, 2016
+ * @ingroup CommandLineParser
+ *
+ * @param description Description of the program usage (optional). It is used in iftPrintUsage().
+ * @param Number of options.
+ * @param Array of Command Line Options.
+ *
+ * @exception Number of options is negative.
+ * @exception Command Line Option with no name defined.
+ * @exception Option Short name without the prefix '-'.
+ * @exception Option Short name is "-h".
+ * @exception Option Long name without the prefix '--'.
+ * @exception Option Long name is "--help".
+ */
+iftCmdLineParser *iftCreateCmdLineParser(const char *description, int n_opts, iftCmdLineOpt cmd_line_opts[]);
+ 
+ 
+/**
+ * @brief Gets the parent dir from a file or directory.
+ * @author Samuel Martins
+ * @date Aug 15, 2015
+ * @ingroup File
+ *
+ * @param pathname The pathname of the file/directory.
+ * @return The parent directory from <b>pathname</b>.
+ *
+ * @warning It does not check if the parent dir exists.
+ * @warning Return the parent dir WITHOUT THE SLASH AT THE END: e.g: /home/samuel --> parent_dir = /home
+ */
+char *iftGetParentDir(const char *pathname);

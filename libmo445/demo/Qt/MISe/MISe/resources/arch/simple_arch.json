@@ -1,0 +1,19 @@
+{
+    "stdev_factor": 0.01,
+    "nlayers": 1,
+    "layer1": {
+		"conv": {
+            "kernel_size": [3, 3, 3],
+            "nkernels_per_marker": 32,
+            "dilation_rate": [1, 1, 1],
+            "nkernels_per_image": 10000,
+            "noutput_channels": 32
+		},
+		"relu": true,
+		"pooling": {
+				"type" : "no_pool",
+				"size": [1, 1, 1],
+				"stride": 1
+		     }
+    }
+}

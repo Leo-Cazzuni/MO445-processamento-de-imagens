@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+title: MISe - Multidimensional Image Segmentation
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Ilan Francisco
+    family-names: Silva
+    email: ilanfsilva@gmail.com
+    orcid: 'https://orcid.org/0000-0003-4019-3380'
+    affiliation: University of Campinas
+  - given-names: Taylla Milena
+    family-names: Theodoro
+    email: tayllamth@gmail.com
+    affiliation: University of Campinas
+  - given-names: Azael Melo
+    family-names: Sousa
+    email: azaelmsousa@gmail.com
+    affiliation: University of Campinas
+  - orcid: 'https://orcid.org/0000-0002-2914-5380'
+    email: afalcao@ic.unicamp.br
+    given-names: Alexandre Xavier
+    family-names: Falcão
+    affiliation: University of Campinas
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.8280035
+repository-code: 'https://github.com/LIDS-UNICAMP/MISe'
+abstract: >-
+  Official repository of the software MISe -
+  Multidimensional Image Segmentation. MISe offers a suite
+  of image segmentation and analysis algorithms developed
+  using the Image Foresting Transform (IFT) framework,
+  coupled with image visualization and volume rendering
+  tools. Living up to its name, MISe accepts the workload
+  with various 2D, 3D, and 4D images.
+keywords:
+  - Interactive Image Segmentation
+  - Medical Image Analysis
+  - Multidimensional Visualizer
+license: MIT
+version: v0.0.1-alpha
+date-released: '2023-08-24'

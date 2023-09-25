@@ -1,0 +1,16 @@
+Verify requirements.txt and create variable NEWIFT_DIR with the path
+to your libmo445. For instance:
+
+export NEWIFT_DIR=/home/username/libmo445
+
+type
+
+make IFT_GPU=1
+
+to compile the code for GPU optimization
+
+or just type
+
+make
+
+

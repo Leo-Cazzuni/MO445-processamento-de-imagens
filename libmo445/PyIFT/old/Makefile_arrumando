@@ -1,0 +1,211 @@
+FLAGS= -fPIC -O2 -std=gnu11 -Wall -Wno-unused-result -pedantic
+PYCFLAGS= `python-config --cflags` $(FLAGS)
+PYLDFLAGS= `python-config --ldflags` $(FLAGS)
+
+BIN=$(NEWIFT_DIR)/bin
+BUILD=$(NEWIFT_DIR)/build
+DEMO=$(NEWIFT_DIR)/demo
+DOCS=$(NEWIFT_DIR)/docs
+INCLUDE=$(NEWIFT_DIR)/include
+LIB=$(NEWIFT_DIR)/lib
+OBJ=$(NEWIFT_DIR)/obj
+SRC=$(NEWIFT_DIR)/src
+TEST=$(NEWIFT_DIR)/test
+
+BIN = $(NEWIFT_DIR)/bin
+
+LIBSVM_DIR = $(NEWIFT_DIR)/externals/libsvm
+LIBNIFTI_DIR= $(NEWIFT_DIR)/externals/libnifti
+LIBJPEG_DIR= $(NEWIFT_DIR)/externals/libjpeg
+LIBPNG_DIR= $(NEWIFT_DIR)/externals/libpng
+ZLIB_DIR= $(NEWIFT_DIR)/externals/zlib
+
+LIBIFT_INC   = -I $(NEWIFT_DIR)/include
+LIBIFT_LD    = -L $(NEWIFT_DIR)/lib -lift
+LIBSVM_INC   = -I $(LIBSVM_DIR)/include 
+LIBSVM_LD    = -L $(LIBSVM_DIR)/lib -lsvm -lstdc++ 
+LIBCBLAS_INC = -I /usr/local/opt/openblas/include
+LIBCBLAS_LD  = -L /usr/local/opt/openblas/lib -L /lib64/atlas-sse3 -L /usr/lib/atlas-base -llapack -lblas -lcblas
+
+LIBNIFTI_INC = -I $(LIBNIFTI_DIR)/include
+LIBJPEG_INC = -I $(LIBJPEG_DIR)/include
+LIBPNG_INC = -I $(LIBPNG_DIR)/include
+ZLIB_INC = -I $(ZLIB_DIR)/include
+
+EXTERNALS_LD = -fopenmp -lm -lpng -lz
+
+INCLUDES = $(LIBIFT_INC) $(LIBSVM_INC) $(LIBCBLAS_INC) $(LIBNIFTI_INC) $(LIBJPEG_INC) $(LIBPNG_INC) $(ZLIB_INC)
+LIBS     = $(LIBIFT_LD) $(LIBSVM_LD) $(LIBCBLAS_LD) $(EXTERNALS_LD)
+
+all: swig wrap shared
+
+$(LIB)/swiglib.a:\
+$(OBJ)/iftDialog.o \
+$(OBJ)/iftBasicDataTypes.o \
+$(OBJ)/iftMemory.o \
+$(OBJ)/iftSList.o \
+$(OBJ)/iftString.o \
+$(OBJ)/iftCommon.o \
+$(OBJ)/iftGenericLinkedList.o \
+$(OBJ)/iftSort.o \
+$(OBJ)/iftColor.o \
+$(OBJ)/iftCurve.o \
+$(OBJ)/iftPlane.o \
+$(OBJ)/iftMSPS.o \
+$(OBJ)/iftGraphics.o \
+$(OBJ)/iftMatrix.o \
+$(OBJ)/iftInterpolation.o \
+$(OBJ)/iftAdjacency.o \
+$(OBJ)/iftImage.o \
+$(OBJ)/iftFImage.o \
+$(OBJ)/iftMImage.o \
+$(OBJ)/iftImageMath.o \
+$(OBJ)/iftImageForest.o \
+$(OBJ)/iftFImageForest.o \
+$(OBJ)/iftDataSet.o \
+$(OBJ)/iftMetrics.o \
+$(OBJ)/iftDescriptors.o \
+$(OBJ)/iftClustering.o \
+$(OBJ)/iftClassification.o \
+$(OBJ)/iftGQueue.o \
+$(OBJ)/iftMST.o \
+$(OBJ)/iftFHeap.o \
+$(OBJ)/iftDHeap.o \
+$(OBJ)/iftSet.o \
+$(OBJ)/iftBMap.o \
+$(OBJ)/iftFSet.o \
+$(OBJ)/iftList.o \
+$(OBJ)/iftDList.o \
+$(OBJ)/iftCompTree.o \
+$(OBJ)/iftLabeledSet.o \
+$(OBJ)/iftSeeds.o \
+$(OBJ)/iftFIFO.o \
+$(OBJ)/iftIntQueue.o \
+$(OBJ)/iftLIFO.o \
+$(OBJ)/iftAdjSet.o \
+$(OBJ)/iftRadiometric.o \
+$(OBJ)/iftHistogram.o \
+$(OBJ)/iftMathMorph.o \
+$(OBJ)/iftSegmentation.o \
+$(OBJ)/iftRepresentation.o \
+$(OBJ)/iftKernel.o \
+$(OBJ)/iftFiltering.o \
+$(OBJ)/iftDeepLearning.o \
+$(OBJ)/iftGeometric.o \
+$(OBJ)/iftSVM.o \
+$(OBJ)/iftRegion.o \
+$(OBJ)/iftObjectModels.o \
+$(OBJ)/iftParseInput.o \
+$(OBJ)/iftFile.o \
+$(OBJ)/iftReconstruction.o \
+$(OBJ)/iftKmeans.o \
+$(OBJ)/iftSlic.o \
+$(OBJ)/iftDisjointSet.o \
+$(OBJ)/iftRegistration.o \
+$(OBJ)/iftSimilarity.o \
+$(OBJ)/iftHierarchicCluster.o \
+$(OBJ)/iftInpainting.o \
+$(OBJ)/iftVideo.o \
+$(OBJ)/iftIGraph.o \
+$(OBJ)/iftDicom.o \
+$(OBJ)/iftBagOfFeatures.o \
+$(OBJ)/iftJson.o \
+$(OBJ)/iftCSV.o \
+$(OBJ)/iftUtil.o \
+$(OBJ)/iftDict.o \
+$(OBJ)/iftCompression.o \
+$(OBJ)/iftParamOptimizer.o \
+$(OBJ)/iftParamOptimizationProblems.o \
+$(OBJ)/iftSegmentationResuming.o \
+$(OBJ)/iftManifold.o \
+$(ZLIB_DIR)/obj/adler32.o \
+$(ZLIB_DIR)/obj/crc32.o \
+$(ZLIB_DIR)/obj/deflate.o \
+$(ZLIB_DIR)/obj/gzclose.o \
+$(ZLIB_DIR)/obj/gzlib.o \
+$(ZLIB_DIR)/obj/gzread.o \
+$(ZLIB_DIR)/obj/gzwrite.o \
+$(ZLIB_DIR)/obj/infback.o \
+$(ZLIB_DIR)/obj/inffast.o \
+$(ZLIB_DIR)/obj/inflate.o \
+$(ZLIB_DIR)/obj/inftrees.o \
+$(ZLIB_DIR)/obj/trees.o \
+$(ZLIB_DIR)/obj/uncompr.o \
+$(ZLIB_DIR)/obj/zutil.o \
+$(LIBSVM_DIR)/obj/svm.o \
+$(LIBPNG_DIR)/obj/png.o \
+$(LIBPNG_DIR)/obj/pngerror.o \
+$(LIBPNG_DIR)/obj/pngget.o \
+$(LIBPNG_DIR)/obj/pngmem.o \
+$(LIBPNG_DIR)/obj/pngpread.o \
+$(LIBPNG_DIR)/obj/pngread.o \
+$(LIBPNG_DIR)/obj/pngrio.o \
+$(LIBPNG_DIR)/obj/pngrtran.o \
+$(LIBPNG_DIR)/obj/pngrutil.o \
+$(LIBPNG_DIR)/obj/pngset.o \
+$(LIBPNG_DIR)/obj/pngtrans.o \
+$(LIBPNG_DIR)/obj/pngwio.o \
+$(LIBPNG_DIR)/obj/pngwrite.o \
+$(LIBPNG_DIR)/obj/pngwtran.o \
+$(LIBPNG_DIR)/obj/pngwutil.o \
+$(LIBJPEG_DIR)/obj/jcapimin.o \
+$(LIBJPEG_DIR)/obj/jcapistd.o \
+$(LIBJPEG_DIR)/obj/jcarith.o \
+$(LIBJPEG_DIR)/obj/jctrans.o \
+$(LIBJPEG_DIR)/obj/jcparam.o \
+$(LIBJPEG_DIR)/obj/jdatadst.o \
+$(LIBJPEG_DIR)/obj/jcinit.o \
+$(LIBJPEG_DIR)/obj/jcmaster.o \
+$(LIBJPEG_DIR)/obj/jcmarker.o \
+$(LIBJPEG_DIR)/obj/jcmainct.o \
+$(LIBJPEG_DIR)/obj/jcprepct.o \
+$(LIBJPEG_DIR)/obj/jccoefct.o \
+$(LIBJPEG_DIR)/obj/jccolor.o \
+$(LIBJPEG_DIR)/obj/jcsample.o \
+$(LIBJPEG_DIR)/obj/jchuff.o \
+$(LIBJPEG_DIR)/obj/jcdctmgr.o \
+$(LIBJPEG_DIR)/obj/jfdctfst.o \
+$(LIBJPEG_DIR)/obj/jfdctflt.o \
+$(LIBJPEG_DIR)/obj/jfdctint.o \
+$(LIBJPEG_DIR)/obj/jdapimin.o \
+$(LIBJPEG_DIR)/obj/jdapistd.o \
+$(LIBJPEG_DIR)/obj/jdarith.o \
+$(LIBJPEG_DIR)/obj/jdtrans.o \
+$(LIBJPEG_DIR)/obj/jdatasrc.o \
+$(LIBJPEG_DIR)/obj/jdmaster.o \
+$(LIBJPEG_DIR)/obj/jdinput.o \
+$(LIBJPEG_DIR)/obj/jdmarker.o \
+$(LIBJPEG_DIR)/obj/jdhuff.o \
+$(LIBJPEG_DIR)/obj/jdmainct.o \
+$(LIBJPEG_DIR)/obj/jdcoefct.o \
+$(LIBJPEG_DIR)/obj/jdpostct.o \
+$(LIBJPEG_DIR)/obj/jddctmgr.o \
+$(LIBJPEG_DIR)/obj/jidctfst.o \
+$(LIBJPEG_DIR)/obj/jidctflt.o \
+$(LIBJPEG_DIR)/obj/jidctint.o \
+$(LIBJPEG_DIR)/obj/jdsample.o \
+$(LIBJPEG_DIR)/obj/jdcolor.o \
+$(LIBJPEG_DIR)/obj/jquant1.o \
+$(LIBJPEG_DIR)/obj/jquant2.o \
+$(LIBJPEG_DIR)/obj/jdmerge.o \
+$(LIBJPEG_DIR)/obj/jaricom.o \
+$(LIBJPEG_DIR)/obj/jcomapi.o \
+$(LIBJPEG_DIR)/obj/jutils.o \
+$(LIBJPEG_DIR)/obj/jerror.o \
+$(LIBJPEG_DIR)/obj/jmemmgr.o \
+$(LIBJPEG_DIR)/obj/jmemnobs.o \
+$(LIBNIFTI_DIR)/obj/nifti1_io.o \
+$(LIBNIFTI_DIR)/obj/znzlib.o 
+	ar csr $(LIB)/swiglib.a $(OBJ)/*.o
+
+swig:
+	swig -python iftImage.i
+
+wrap:
+	$(CC) $(PYCFLAGS) $(INCLUDES) -c iftImage_wrap.c 
+
+shared:
+	$(CC) $(PYLDFLAGS) -shared $(LIB)/swiglib.a -o _iftImage.so iftImage_wrap.o
+	
+clean:
+	rm iftImage_wrap.o _iftImage.so

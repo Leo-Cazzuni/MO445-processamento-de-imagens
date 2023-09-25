@@ -1,0 +1,19 @@
+Installation steps for linux.
+
+Install Jupyter-Notebook (recommended for image display)
+1 - python3 -m pip install --upgrade pip
+2 - python3 -m install jupyter
+
+Compile swig files
+3 - make
+
+Install PyIFT on python modules directory
+4 - sudo python3 setup.py install
+
+Done! Installation complete.
+
+	When importing the module on python it might happen to crash
+with undefined reference error, this happens because a function
+from pyift.i was removed from libIFT (C library).
+	To fix this it is necessary to remove the function from the 
+pyift.i and recompile the swig files and reinstall PyIFT.

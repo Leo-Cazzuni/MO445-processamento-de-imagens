@@ -1,0 +1,10 @@
+Write a C program to read a sequence of raw files, converting it into
+a scene file. This program will need to execute from command line the
+following programs:
+
+gdcmconv: to uncompress each dicom file, creating an uncompressed one
+gdcmraw: to convert the uncompressed file into a raw file.
+
+Your program will also need to input dimensions and voxel size. This
+information can be obtained with gdcminfo, executed on consecutive
+dicom files.

@@ -1,0 +1,76 @@
+First, you must have your Python enviroment for deep learning. You can
+install miniconda and create that enviroment. See
+
+https://docs.conda.io/en/latest/miniconda.html
+
+For instance, in Ubuntu 20.04 or above, you may want to download
+Miniconda3-py310_23.5.2-0-Linux-x86_64.sh and execute
+
+ssh Miniconda3-py310_23.5.2-0-Linux-x86_64.sh
+
+to install miniconda with Python 3.10 in your 64-bit machine.
+
+A new environment for mo445 in conda can be created by
+
+conda create -n mo445
+
+You may use
+
+conda activate mo445
+
+to activate this environment, or 
+
+conda deactivate
+
+to deactivate it.
+
+Once your environment is created and activated, you may install
+packages by typing:
+
+conda install <package-name>
+
+Similarly, you may unsinstall packages by typing
+
+conda uninstall <package-name>
+
+You will need the following packages
+
+numpy, matplotlib, scikit-image, opencv-python, pytorch, torchvision,
+jupyter, torchsummary, torchmetrics, sklearn, sklego, etc. You may install
+them as needed to run the notebooks of MO445. The installation of some
+packages already installs other packages.
+
+For pytorch, it is better to follow instructions at
+https://pytorch.org/
+
+For instance, to install it with cuda toolkit 11.1 for execution in
+the GPU of your machine, the command will be
+
+conda install pytorch torchvision cudatoolkit=11.1 -c pytorch -c nvidia
+
+For some packages, such as torch-summary and torch-snippets, you might
+have to use
+
+pip install torch-summary
+pip install torch-snippets
+
+For PyIFT
+pip install pyift-0.1-cp310-cp310-linux_x86_64.whl
+
+or
+
+pip install --force pyift-0.1-cp310-cp310-linux_x86_64.whl
+
+in case you need to reinstall it. Afterwords, type.
+
+cd ~/miniconda3/envs/mo445/lib/python3.10/site-packages/pyift
+ln -s ../_pyift.*.so .
+
+See installation-instructions.txt for more details.
+
+
+For FLIM - Feature Learning From Image Markers
+
+pip install -e git+https://github.com/LIDS-UNICAMP/FLIM.git#egg=FLIM
+
+Have fun!

@@ -1,0 +1,4 @@
+sample 01,11,12,13,90.00,positive
+sample 02,21,22,23,91.50,positive
+sample 03,31,32,33,-5.88,negative
+sample 04,41,42,43,45.00,positive

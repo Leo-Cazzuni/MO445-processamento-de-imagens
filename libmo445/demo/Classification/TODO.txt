@@ -1,0 +1,36 @@
+1. Colocar o codigo de iftLabelImageFromDataSet em uma função na IFT,
+para poder chamá-la em PyIFT.
+
+2. Corrigir bug de ClassifierLearning que sempre grava o status
+IFT_LABELPROPAGATED para todas as amostras quando existem amostras
+supervisionadas.
+
+3. Usar a função em 1 para propagar os grupos em uma imagem e propagar o truelabel do dataset em outra imagem, usando como sementes
+
+3.1 todos os pixels de superpixels com truelabels no dataset para delineamento e
+3.2 apenas os pixels que resultam do seguinte algoritmo para realce de objeto:
+
+    (a) Gerar imagem dos grupos propagados.
+    (b) Gerar imagem dos superpixels com truelabels.
+    (c) Para cada grupo, manter os pixels do truelabel mais frequente
+    	desde que todos os truelabels gerem sementes. Caso isso nao
+    	seja possivel para um truelabel x, manter os pixels do grupo
+    	em que o truelabel x é mais frequente. Se mesmo assim um
+    	truelabel nao gerar sementes, não gere o mapa para o objeto
+    	correspondente.
+
+Crie funções para calcular as sementes de delineamento e de realce.
+
+4. Use as sementes de realce para gerar um mapa de objeto para cada objeto.
+
+5. Aplique o delineamento explorando os mapas de objeto para fins de orientacao e a abordagem dynamic. 
+
+6. Aplique convolução dos patches com banco de filtros selecionando os
+melhores por aprendizado supervisionado das amostras rotuladas pelas
+sementes e/ou OPF Semi.
+
+
+
+
+
+
