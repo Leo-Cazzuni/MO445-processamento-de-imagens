@@ -15,7 +15,87 @@ iftImage *DynamicTrees(iftImage *orig, iftImage *seeds_in, iftImage *seeds_out)
   iftMImage  *mimg     = iftImageToMImage(orig,LAB_CSPACE);
   iftImage   *pathval  = NULL, *label = NULL, *root = NULL;
 
+  float *tree_L = NULL;
+  float *tree_A = NULL;
+  float *tree_B = NULL;
+  int *nnodes = NULL;
+  int Imax = iftRound(sqrtf(3.0)*iftMax(iftMax(iftMMaximumValue(mimg,0),iftMMaximumValue(mimg,1)),iftMMaximumValue(mimg,2)));
 
+  iftGQueue *Q = NULL; 
+  iftAdjRel *A = iftCircular(1.0);
+  int i, p, q, r, tmp;
+  iftVoxel u, v;
+
+  pathval = iftCreateImage(orig->xsize, orig->ysize, orig->zsize);
+  label = iftCreateImage(orig->xsize, orig->ysize, orig->zsize); 
+  root = iftCreateImage(orig->xsize, orig->ysize, orig->zsize); 
+  tree_L = iftAllocFloatArray(orig->n);
+  tree_A = iftAllocFloatArray(orig->n);
+  tree_B = iftAllocFloatArray(orig->n);
+  nnodes = iftAllocIntArray(orig->n);
+  Q = iftCreateGQueue(Imax+1, orig->n, pathval->val);
+
+  for (int p = 0; p < orig->n; p++){
+    pathval->val[p] = IFT_INFINITY_INT;
+    if (seeds_in->val[p] != 0){
+      root->val[p] = p;
+      label->val[p] = seeds_in->val[p];
+      pathval->val[p] = 0;
+    }else{
+      if(seeds_out->val[p] != 0){
+        root->val[p] = p;
+        label->val[p] = 0;
+        pathval->val[p] = 0;
+      }
+    }
+    iftInsertGQueue(&Q, p);
+  }
+
+  while(!iftEmptyGQueue(Q)){
+    p = iftRemoveGQueue(Q);
+    r = root->val[p];
+    tree_L[r] += mimg->val[p][0];
+    tree_A[r] += mimg->val[p][1];
+    tree_B[r] += mimg->val[p][2];
+    nnodes[r] += 1;
+    u = iftGetVoxelCoord(orig,p);
+  
+
+    for(i = 1; i<A->n ; i++){
+      v = iftGetAdjacentVoxel(A, u, i);
+      if (iftValidVoxel(orig,v)){
+        q = iftGetVoxelIndex(orig, v);
+        if(Q->L.elem[q].color != IFT_BLACK){
+          int Wi = iftRound(
+                   sqrtf(powf((mimg->val[q][0]-tree_L[r]/nnodes[r]),2.0) +
+                         powf((mimg->val[q][1]-tree_A[r]/nnodes[r]),2.0) +
+                         powf((mimg->val[q][2]-tree_B[r]/nnodes[r]),2.0))
+                   );
+
+          tmp = iftMax(pathval->val[p],Wi);
+
+          if(tmp<pathval->val[p]){
+            if(Q->L.elem[q].color == IFT_GRAY)
+              iftRemoveGQueueElem(Q,q);
+            label->val[q] = label->val[p];
+            root->val[q] = root->val[p];
+            pathval->val[q] = tmp;
+            iftInsertGQueue(&Q,q);
+          }
+
+        }
+      }
+    }
+  }
+
+  iftDestroyAdjRel(&A);
+  iftDestroyGQueue(&Q);
+  iftDestroyImage(&pathval);
+  iftDestroyImage(&root);
+  iftDestroyIntArray(&nnodes);
+  iftDestroyFloatArray(&tree_L);
+  iftDestroyFloatArray(&tree_A);
+  iftDestroyFloatArray(&tree_B);
   return (label);
 }
 
@@ -141,11 +221,12 @@ int main(int argc, char *argv[])
 
   /* Example: delineation salie 1 objs */
   
-  if (argc!=4){ 
-    iftError("Usage: delineation <P1> <P2> <P3>\n"
+  if (argc!=5){ 
+    iftError("Usage: delineation <P1> <P2> <P3> <P5>\n"
 	     "[1] folder with the salience maps\n"
 	     "[2] layer (1,2,...) to create the results\n"
-	     "[3] output folder with the resulting images\n",	 
+	     "[3] output folder with the resulting images\n"
+       "[4] 0:Watershed 1:DynamicTrees\n",	 
 	     "main");
   }
   
@@ -153,6 +234,7 @@ int main(int argc, char *argv[])
 
   char *filename     = iftAllocCharArray(512);
   int layer          = atoi(argv[2]);
+  int isDynamicTrees = atoi(argv[4]);
   char suffix[12];
   sprintf(suffix,"_layer%d.png",layer);
   iftFileSet *fs     = iftLoadFileSetFromDirBySuffix(argv[1], suffix, true);
@@ -191,8 +273,11 @@ int main(int argc, char *argv[])
       iftDestroyImage(&seeds_in);
       seeds_in        = bin;
 
-      /* iftImage *label = Watershed(gradI,seeds_in,seeds_out); */
-      iftImage  *label  = DynamicTrees(orig,seeds_in,seeds_out);
+      // iftImage *label = Watershed(gradI,seeds_in,seeds_out);
+      // iftImage  *label  = DynamicTrees(orig,seeds_in,seeds_out);
+
+      iftImage  *label  = isDynamicTrees==1?DynamicTrees(orig,seeds_in,seeds_out):Watershed(gradI,seeds_in,seeds_out);
+
       iftFImage *weight = iftSmoothWeightImage(gradI, 0.5);
       iftImage *smooth_label = iftFastSmoothObjects(label, weight, 5);
       iftDestroyImage(&label);

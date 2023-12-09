@@ -33,6 +33,6 @@ line = "decode_layer {} arch.json flim {} salie".format(target_layer, model_type
 os.system(line)
 line = "detection salie {} boxes".format(target_layer)
 os.system(line)
-line = "delineation salie {} objs".format(target_layer)
+line = "delineation salie {} objs 1".format(target_layer)
 os.system(line)
         

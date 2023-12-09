@@ -99,6 +99,21 @@ int main(int argc, char *argv[])
     YCbCr          = iftRGBtoYCbCr(RGB,Imax);
     iftImage *img2 = DrawBoxes(img1, gt, YCbCr, 1.5);
 
+    // IoU
+
+    int intersec = 0;
+    int uni = 0;
+    for (int p = 0; p < comp->n; p++){
+      if(gt->val[p] == 255 || comp->val[p]==255) uni++;
+      if (gt->val[p] == 255 && comp->val[p]==255) intersec++;
+    }
+
+    float iou = (float)intersec/(float)uni;
+
+    sprintf(filename,"%s/%s-IoU%f.png",output_dir,basename2,iou);
+    iftWriteImageByExt(comp,filename);
+
+
     iftDestroyImage(&bin);
     iftDestroyImage(&comp);
     iftDestroyAdjRel(&A);
