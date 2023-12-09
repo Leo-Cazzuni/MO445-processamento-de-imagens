@@ -92,10 +92,10 @@ iftImage *DynamicTrees(iftImage *orig, iftImage *seeds_in, iftImage *seeds_out)
   iftDestroyGQueue(&Q);
   iftDestroyImage(&pathval);
   iftDestroyImage(&root);
-  iftDestroyIntArray(&nnodes);
-  iftDestroyFloatArray(&tree_L);
-  iftDestroyFloatArray(&tree_A);
-  iftDestroyFloatArray(&tree_B);
+  // iftDestroyIntArray(&nnodes);
+  // iftDestroyFloatArray(&tree_L);
+  // iftDestroyFloatArray(&tree_A);
+  // iftDestroyFloatArray(&tree_B);
   return (label);
 }
 
@@ -260,6 +260,7 @@ int main(int argc, char *argv[])
     iftImage  *seeds_in = iftSelectCompInAreaInterval(bin, NULL, 400, 4000);
     iftDestroyImage(&bin);
     iftImage  *img      = NULL;
+    iftImage  *img_ws      = NULL;
 
     if (iftMaximumValue(seeds_in)==0)
       img = iftCopyImage(orig);
@@ -277,11 +278,70 @@ int main(int argc, char *argv[])
       // iftImage  *label  = DynamicTrees(orig,seeds_in,seeds_out);
 
       iftImage  *label  = isDynamicTrees==1?DynamicTrees(orig,seeds_in,seeds_out):Watershed(gradI,seeds_in,seeds_out);
-
+      iftImage  *label_ws  = Watershed(gradI,seeds_in,seeds_out);
+      
       iftFImage *weight = iftSmoothWeightImage(gradI, 0.5);
       iftImage *smooth_label = iftFastSmoothObjects(label, weight, 5);
       iftDestroyImage(&label);
       label = smooth_label;
+
+      iftImage *smooth_label_ws = iftFastSmoothObjects(label_ws, weight, 5);
+      iftDestroyImage(&label_ws);
+      label_ws = smooth_label_ws;
+
+      // f score
+      sprintf(filename,"./truelabels/%s.png",basename1);
+      iftImage *gt      = iftReadImageByExt(filename);
+
+      bin  = iftThreshold(gt,iftOtsu(gt),IFT_INFINITY_INT,255);
+      seeds_in = iftSelectCompInAreaInterval(bin, NULL, 400, 4000);
+      iftDestroyImage(&bin);
+
+      bin             = iftDilateBin(seeds_in,&S,15.0);
+      iftDestroySet(&S);
+      seeds_out = iftComplement(bin);
+      iftDestroyImage(&bin);
+      bin             = iftFastLabelComp(seeds_in,NULL);
+      iftDestroyImage(&seeds_in);
+      seeds_in        = bin;
+
+      iftImage  *label_gt  = isDynamicTrees==1?DynamicTrees(orig,seeds_in,seeds_out):Watershed(gradI,seeds_in,seeds_out);
+      iftImage *smooth_label_gt = iftFastSmoothObjects(label_gt, weight, 5);
+      iftDestroyImage(&label_gt);
+      label_gt = smooth_label_gt;
+
+      // int truePositive = 0;
+      // int falsePositive = 0;
+      // int falseNegative = 0;
+
+      // for (int p = 0; p < label->n; p++){
+      //   if (label_gt->val[p] == 255 && label->val[p] == 255) {
+      //     truePositive++;
+      //   } else if (label_gt->val[p] == 0 && label->val[p] == 255) {
+      //     falsePositive++;
+      //   } else if (label_gt->val[p] == 255 && label->val[p] == 0) {
+      //     falseNegative++;
+      //   }
+      // }
+
+      // float precision = (float) truePositive / (truePositive + falsePositive);
+      // float recall = (float) truePositive / (truePositive + falseNegative);
+
+      // float fScore = 2 * (precision * recall) / (precision + recall);
+      
+      // sprintf(filename,"%s/%s-F-score%f.png",output_dir,basename2,fScore);
+      // iftWriteImageByExt(label,filename);
+
+      img              = iftCopyImage(orig);
+      iftDrawBorders(img, label_gt, C, ctb->color[1], B);
+      iftDestroyImage(&label_gt);
+      sprintf(filename,"%s/%s-gt.png",output_dir,basename2);
+      iftWriteImageByExt(img,filename);
+
+      img_ws              = iftCopyImage(orig);
+      iftDrawBorders(img_ws, label_ws, C, ctb->color[1], B);
+      iftDestroyImage(&label_ws);
+
       iftDestroyFImage(&weight);
       img              = iftCopyImage(orig);
       iftDrawBorders(img, label, C, ctb->color[1], B);
@@ -298,8 +358,11 @@ int main(int argc, char *argv[])
 
     sprintf(filename,"%s/%s.png",output_dir,basename2);
     iftWriteImageByExt(img,filename);
+    sprintf(filename,"%s/%s-ws.png",output_dir,basename2);
+    iftWriteImageByExt(img_ws,filename);
 
     iftDestroyImage(&img);
+    iftDestroyImage(&img_ws);
     iftFree(basename1);
     iftFree(basename2);
   }

@@ -1,19 +1,25 @@
 import os
 import sys
-    
-if (len(sys.argv) != 4):
+
+if (len(sys.argv) != 6):
     print("python exec <P1> <P2>")
     print("P1: number of layers (if negative, do not encode layers again)")
     print("P2: layer for the results")
-    print("P3: model_type (0, 1, 2)")
+    print("P3: points per marker? (1, 2, ...)")
+    print("P4: model_type (0, 1, 2)")
+    print("P5: preproc? (0, 1)")
     exit()
 
 nlayers      = int(sys.argv[1])
 target_layer = int(sys.argv[2])
-model_type   = int(sys.argv[3])
+npts_per_marker = int(sys.argv[3])
+model_type   = int(sys.argv[4])
+do_preproc = int(sys.argv[5])
 
-os.system("preproc images 1.5 filtered")
-npts_per_marker = 1
+os.system('python3 dellall.py')
+
+if do_preproc==1:
+    os.system("preproc images 1.5 filtered")
 line = "bag_of_feature_points filtered markers {} bag".format(npts_per_marker)
 os.system(line)
 
@@ -28,6 +34,8 @@ for layer in range(1,nlayers+1):
         os.system(line)
         line = "encode_merged_layer arch.json {} flim".format(layer)
         os.system(line)
+    line = "decode_layer {} arch.json flim {} salie".format(layer, model_type)
+    os.system(line)
 
 line = "decode_layer {} arch.json flim {} salie".format(target_layer, model_type)
 os.system(line)

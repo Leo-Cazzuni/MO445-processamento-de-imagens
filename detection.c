@@ -99,18 +99,51 @@ int main(int argc, char *argv[])
     YCbCr          = iftRGBtoYCbCr(RGB,Imax);
     iftImage *img2 = DrawBoxes(img1, gt, YCbCr, 1.5);
 
-    // IoU
 
+    // IoU detec
     int intersec = 0;
     int uni = 0;
+    int th = 1;
     for (int p = 0; p < comp->n; p++){
-      if(gt->val[p] == 255 || comp->val[p]==255) uni++;
-      if (gt->val[p] == 255 && comp->val[p]==255) intersec++;
+      if(gt->val[p] == 255 || comp->val[p]>=th) uni++;
+      if (gt->val[p] == 255 && comp->val[p]>=th) intersec++;
     }
 
-    float iou = (float)intersec/(float)uni;
+    float iou_detec = (float)intersec/(float)uni;
 
-    sprintf(filename,"%s/%s-IoU%f.png",output_dir,basename2,iou);
+    // IoU sali
+    // intersec = 0;
+    // uni = 0;
+    // th = 1;
+    // for (int p = 0; p < comp->n; p++){
+    //   if(gt->val[p] == 255 || comp->val[p]>=th) uni++;
+    //   if (gt->val[p] == 255 && comp->val[p]>=th) intersec++;
+    // }
+
+    // float iou_sali = (float)intersec/(float)uni;
+
+    // f-score
+    int truePositive = 0;
+    int falsePositive = 0;
+    int falseNegative = 0;
+
+    for (int p = 0; p < comp->n; p++){
+      if (gt->val[p] == 255 && comp->val[p] >=th) {
+        truePositive++;
+      } else if (gt->val[p] == 0 && comp->val[p] >=th) {
+        falsePositive++;
+      } else if (gt->val[p] == 255 && comp->val[p] == 0) {
+        falseNegative++;
+      }
+    }
+
+    float precision = (float) truePositive / (truePositive + falsePositive);
+    float recall = (float) truePositive / (truePositive + falseNegative);
+    float fScore = 2 * (precision * recall) / (precision + recall);
+
+    printf("%f %f %f \n", precision, recall, fScore);
+
+    sprintf(filename,"%s/%s-IoU%f-fscore%f.png",output_dir,basename2,iou_detec,fScore);
     iftWriteImageByExt(comp,filename);
 
 

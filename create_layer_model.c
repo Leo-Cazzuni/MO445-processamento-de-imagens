@@ -164,7 +164,6 @@ int main(int argc, char *argv[])
        filters, biases, truelabel of the filters. */
     
     for (int i=0; i < fs->n; i++) {
-      printf("\n\n\nIMAGEM %d:\n",i);
       char *basename     = iftFilename(fs->files[i]->path, "-fpts.txt");    
       sprintf(filename, "./layer%d/%s%s", layer-1, basename, ".mimg");
       iftMImage *mimg    = iftReadMImage(filename);
