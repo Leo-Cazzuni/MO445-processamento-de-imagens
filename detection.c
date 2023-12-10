@@ -141,7 +141,7 @@ int main(int argc, char *argv[])
     float recall = (float) truePositive / (truePositive + falseNegative);
     float fScore = 2 * (precision * recall) / (precision + recall);
 
-    printf("%f %f %f \n", precision, recall, fScore);
+    printf("iou=%f fsocre=%f\n", iou_detec, fScore);
 
     sprintf(filename,"%s/%s-IoU%f-fscore%f.png",output_dir,basename2,iou_detec,fScore);
     iftWriteImageByExt(comp,filename);

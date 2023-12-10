@@ -252,6 +252,7 @@ int main(int argc, char *argv[])
     iftImage *salie   = iftReadImageByExt(fs->files[i]->path);
     sprintf(filename,"./images/%s.png",basename1);
     iftImage *orig    = iftReadImageByExt(filename);
+    float dice,dice_ws;
     
     /* Delineate parasite */
 
@@ -310,27 +311,9 @@ int main(int argc, char *argv[])
       iftDestroyImage(&label_gt);
       label_gt = smooth_label_gt;
 
-      // int truePositive = 0;
-      // int falsePositive = 0;
-      // int falseNegative = 0;
-
-      // for (int p = 0; p < label->n; p++){
-      //   if (label_gt->val[p] == 255 && label->val[p] == 255) {
-      //     truePositive++;
-      //   } else if (label_gt->val[p] == 0 && label->val[p] == 255) {
-      //     falsePositive++;
-      //   } else if (label_gt->val[p] == 255 && label->val[p] == 0) {
-      //     falseNegative++;
-      //   }
-      // }
-
-      // float precision = (float) truePositive / (truePositive + falsePositive);
-      // float recall = (float) truePositive / (truePositive + falseNegative);
-
-      // float fScore = 2 * (precision * recall) / (precision + recall);
-      
-      // sprintf(filename,"%s/%s-F-score%f.png",output_dir,basename2,fScore);
-      // iftWriteImageByExt(label,filename);
+      dice = iftDiceSimilarity(iftBinarize(label),iftBinarize(label_gt));
+      dice_ws = iftDiceSimilarity(iftBinarize(label_ws),iftBinarize(label_gt));
+      printf("DICE=%f DICE_WS=%f  \n",dice,dice_ws);
 
       img              = iftCopyImage(orig);
       iftDrawBorders(img, label_gt, C, ctb->color[1], B);
@@ -356,9 +339,9 @@ int main(int argc, char *argv[])
       
     /* save resulting image */
 
-    sprintf(filename,"%s/%s.png",output_dir,basename2);
+    sprintf(filename,"%s/%s_dice=%f.png",output_dir,basename2,dice);
     iftWriteImageByExt(img,filename);
-    sprintf(filename,"%s/%s-ws.png",output_dir,basename2);
+    sprintf(filename,"%s/%s-ws_dice=%f.png",output_dir,basename2,dice_ws);
     iftWriteImageByExt(img_ws,filename);
 
     iftDestroyImage(&img);

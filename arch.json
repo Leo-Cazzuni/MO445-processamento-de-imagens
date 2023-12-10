@@ -109,5 +109,6 @@
         "relu": true
     },
     "nlayers": 4,
-    "stdev_factor": 0.01
+    "stdev_factor": 0.01,
+    "decode_actv_fun":"sig"
 }
